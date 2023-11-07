@@ -25,12 +25,15 @@ void onDataReceiver(const uint8_t * mac, const uint8_t *incomingData, int len) {
 }
 
 void handleRoot(){
- String html = F("{");
+ String html = F("[");
  for (int i = 0; i < sizeof(isOpen);i++){
-  html += String(isOpen[i] ? "true" : "false") + ",";
+  if (i==2){
+    continue;
+  }
+  html += String("{\"name\": \"Breakout Room ") + String(i+1) + "\",\"status\": " + String(isOpen[i] ? "\"closed\"" : "\"open\"") + "},";
  }
- html += "}";
- server.send(200, F("text/plain"), html);
+ html.setCharAt(html.length()-1, ']');
+ server.send(200, F("application/json"), html);
 }
 
 void setup() {
